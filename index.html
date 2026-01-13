@@ -1,127 +1,158 @@
-import React, { useState } from 'react';
-import { ShoppingCart, Menu, X, ChevronRight } from 'lucide-react';
-
-export default function ApexLook() {
-  const [cart, setCart] = useState([]);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState('all');
-
-  const products = [
-    { id: 1, name: 'Charcoal Face Wash', category: 'skincare', price: 24.99, image: 'https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=400' },
-    { id: 2, name: 'Beard Growth Oil', category: 'haircare', price: 29.99, image: 'https://images.unsplash.com/photo-1619451334792-150fd785ee74?w=400' },
-    { id: 3, name: 'Matte Clay Pomade', category: 'haircare', price: 22.99, image: 'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?w=400' },
-    { id: 4, name: 'Anti-Aging Serum', category: 'skincare', price: 39.99, image: 'https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=400' },
-    { id: 5, name: 'Energizing Shampoo', category: 'haircare', price: 18.99, image: 'https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?w=400' },
-    { id: 6, name: 'Hydrating Moisturizer', category: 'skincare', price: 32.99, image: 'https://images.unsplash.com/photo-1556228453-efd6c1ff04f6?w=400' },
-  ];
-
-  const addToCart = (product) => {
-    setCart([...cart, product]);
-  };
-
-  const filteredProducts = selectedCategory === 'all' 
-    ? products 
-    : products.filter(p => p.category === selectedCategory);
-
-  return (
-    <div className="min-h-screen bg-zinc-900 text-white">
-      {/* Header */}
-      <header className="bg-black border-b border-zinc-800 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-8">
-            <h1 className="text-2xl font-bold tracking-wider">APEX LOOK</h1>
-            <nav className="hidden md:flex gap-6">
-              <button onClick={() => setSelectedCategory('all')} className="hover:text-orange-500 transition">Shop All</button>
-              <button onClick={() => setSelectedCategory('skincare')} className="hover:text-orange-500 transition">Skincare</button>
-              <button onClick={() => setSelectedCategory('haircare')} className="hover:text-orange-500 transition">Haircare</button>
-            </nav>
-          </div>
-          <div className="flex items-center gap-4">
-            <button className="relative">
-              <ShoppingCart className="w-6 h-6" />
-              {cart.length > 0 && (
-                <span className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                  {cart.length}
-                </span>
-              )}
-            </button>
-            <button className="md:hidden" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
-          </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apex Look - Premium Men's Grooming</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    </style>
+</head>
+<body class="bg-zinc-900 text-white">
+    <!-- Header -->
+    <header class="bg-black border-b border-zinc-800 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-8">
+                <h1 class="text-2xl font-bold tracking-wider">APEX LOOK</h1>
+                <nav class="hidden md:flex gap-6">
+                    <button onclick="filterProducts('all')" class="hover:text-orange-500 transition">Shop All</button>
+                    <button onclick="filterProducts('skincare')" class="hover:text-orange-500 transition">Skincare</button>
+                    <button onclick="filterProducts('haircare')" class="hover:text-orange-500 transition">Haircare</button>
+                </nav>
+            </div>
+            <div class="flex items-center gap-4">
+                <button class="relative">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    </svg>
+                    <span id="cart-count" class="hidden absolute -top-2 -right-2 bg-orange-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">0</span>
+                </button>
+                <button class="md:hidden" onclick="toggleMobileMenu()">
+                    <svg id="menu-icon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
         </div>
         
-        {/* Mobile Menu */}
-        {mobileMenuOpen && (
-          <div className="md:hidden bg-zinc-800 px-4 py-4 space-y-3">
-            <button onClick={() => { setSelectedCategory('all'); setMobileMenuOpen(false); }} className="block w-full text-left hover:text-orange-500">Shop All</button>
-            <button onClick={() => { setSelectedCategory('skincare'); setMobileMenuOpen(false); }} className="block w-full text-left hover:text-orange-500">Skincare</button>
-            <button onClick={() => { setSelectedCategory('haircare'); setMobileMenuOpen(false); }} className="block w-full text-left hover:text-orange-500">Haircare</button>
-          </div>
-        )}
-      </header>
-
-      {/* Hero Section */}
-      <section className="relative h-96 bg-gradient-to-r from-zinc-900 via-zinc-800 to-orange-900 flex items-center">
-        <div className="max-w-7xl mx-auto px-4 w-full">
-          <div className="max-w-xl">
-            <h2 className="text-5xl font-bold mb-4">ELEVATE YOUR GROOMING</h2>
-            <p className="text-xl text-zinc-300 mb-6">Premium skincare and haircare designed for the modern man</p>
-            <button className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 font-semibold flex items-center gap-2 transition">
-              SHOP NOW <ChevronRight className="w-5 h-5" />
-            </button>
-          </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-zinc-800 px-4 py-4 space-y-3">
+            <button onclick="filterProducts('all'); toggleMobileMenu();" class="block w-full text-left hover:text-orange-500">Shop All</button>
+            <button onclick="filterProducts('skincare'); toggleMobileMenu();" class="block w-full text-left hover:text-orange-500">Skincare</button>
+            <button onclick="filterProducts('haircare'); toggleMobileMenu();" class="block w-full text-left hover:text-orange-500">Haircare</button>
         </div>
-      </section>
+    </header>
 
-      {/* Products Grid */}
-      <section className="max-w-7xl mx-auto px-4 py-16">
-        <h3 className="text-3xl font-bold mb-8 uppercase tracking-wider">
-          {selectedCategory === 'all' ? 'All Products' : selectedCategory === 'skincare' ? 'Skincare' : 'Haircare'}
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredProducts.map(product => (
-            <div key={product.id} className="bg-zinc-800 border border-zinc-700 overflow-hidden hover:border-orange-500 transition group">
-              <div className="h-64 bg-zinc-700 overflow-hidden">
-                <img src={product.image} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
-              </div>
-              <div className="p-6">
-                <h4 className="text-xl font-semibold mb-2">{product.name}</h4>
-                <p className="text-2xl font-bold text-orange-500 mb-4">${product.price}</p>
-                <button 
-                  onClick={() => addToCart(product)}
-                  className="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 font-semibold transition"
-                >
-                  ADD TO CART
+    <!-- Hero Section -->
+    <section class="relative h-96 bg-gradient-to-r from-zinc-900 via-zinc-800 to-orange-900 flex items-center">
+        <div class="max-w-7xl mx-auto px-4 w-full">
+            <div class="max-w-xl">
+                <h2 class="text-5xl font-bold mb-4">ELEVATE YOUR GROOMING</h2>
+                <p class="text-xl text-zinc-300 mb-6">Premium skincare and haircare designed for the modern man</p>
+                <button class="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 font-semibold flex items-center gap-2 transition">
+                    SHOP NOW
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
                 </button>
-              </div>
             </div>
-          ))}
         </div>
-      </section>
+    </section>
 
-      {/* Footer */}
-      <footer className="bg-black border-t border-zinc-800 py-12">
-        <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div>
-            <h5 className="font-bold text-xl mb-4">APEX LOOK</h5>
-            <p className="text-zinc-400">Premium grooming products for men who demand excellence.</p>
-          </div>
-          <div>
-            <h6 className="font-semibold mb-4">Quick Links</h6>
-            <div className="space-y-2 text-zinc-400">
-              <p className="hover:text-orange-500 cursor-pointer">About Us</p>
-              <p className="hover:text-orange-500 cursor-pointer">Contact</p>
-              <p className="hover:text-orange-500 cursor-pointer">Shipping Info</p>
+    <!-- Products Grid -->
+    <section class="max-w-7xl mx-auto px-4 py-16">
+        <h3 id="category-title" class="text-3xl font-bold mb-8 uppercase tracking-wider">All Products</h3>
+        <div id="products-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black border-t border-zinc-800 py-12">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+                <h5 class="font-bold text-xl mb-4">APEX LOOK</h5>
+                <p class="text-zinc-400">Premium grooming products for men who demand excellence.</p>
             </div>
-          </div>
-          <div>
-            <h6 className="font-semibold mb-4">Newsletter</h6>
-            <p className="text-zinc-400 mb-4">Get exclusive grooming tips and offers</p>
-            <input type="email" placeholder="Your email" className="w-full px-4 py-2 bg-zinc-800 border border-zinc-700 focus:border-orange-500 outline-none" />
-          </div>
+            <div>
+                <h6 class="font-semibold mb-4">Quick Links</h6>
+                <div class="space-y-2 text-zinc-400">
+                    <p class="hover:text-orange-500 cursor-pointer">About Us</p>
+                    <p class="hover:text-orange-500 cursor-pointer">Contact</p>
+                    <p class="hover:text-orange-500 cursor-pointer">Shipping Info</p>
+                </div>
+            </div>
+            <div>
+                <h6 class="font-semibold mb-4">Newsletter</h6>
+                <p class="text-zinc-400 mb-4">Get exclusive grooming tips and offers</p>
+                <input type="email" placeholder="Your email" class="w-full px-4 py-2 bg-zinc-800 border border-zinc-700 focus:border-orange-500 outline-none">
+            </div>
         </div>
-      </footer>
-    </div>
-  );
-}
+    </footer>
+
+    <script>
+        const products = [
+            { id: 1, name: 'Charcoal Face Wash', category: 'skincare', price: 24.99, image: 'https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=400' },
+            { id: 2, name: 'Beard Growth Oil', category: 'haircare', price: 29.99, image: 'https://images.unsplash.com/photo-1619451334792-150fd785ee74?w=400' },
+            { id: 3, name: 'Matte Clay Pomade', category: 'haircare', price: 22.99, image: 'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?w=400' },
+            { id: 4, name: 'Anti-Aging Serum', category: 'skincare', price: 39.99, image: 'https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=400' },
+            { id: 5, name: 'Energizing Shampoo', category: 'haircare', price: 18.99, image: 'https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?w=400' },
+            { id: 6, name: 'Hydrating Moisturizer', category: 'skincare', price: 32.99, image: 'https://images.unsplash.com/photo-1556228453-efd6c1ff04f6?w=400' },
+        ];
+
+        let cart = [];
+        let currentCategory = 'all';
+
+        function renderProducts() {
+            const grid = document.getElementById('products-grid');
+            const filtered = currentCategory === 'all' ? products : products.filter(p => p.category === currentCategory);
+            
+            grid.innerHTML = filtered.map(product => `
+                <div class="bg-zinc-800 border border-zinc-700 overflow-hidden hover:border-orange-500 transition group">
+                    <div class="h-64 bg-zinc-700 overflow-hidden">
+                        <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                    </div>
+                    <div class="p-6">
+                        <h4 class="text-xl font-semibold mb-2">${product.name}</h4>
+                        <p class="text-2xl font-bold text-orange-500 mb-4">$${product.price}</p>
+                        <button onclick="addToCart(${product.id})" class="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 font-semibold transition">
+                            ADD TO CART
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterProducts(category) {
+            currentCategory = category;
+            const title = category === 'all' ? 'All Products' : category === 'skincare' ? 'Skincare' : 'Haircare';
+            document.getElementById('category-title').textContent = title;
+            renderProducts();
+        }
+
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            cart.push(product);
+            updateCartCount();
+        }
+
+        function updateCartCount() {
+            const countEl = document.getElementById('cart-count');
+            if (cart.length > 0) {
+                countEl.classList.remove('hidden');
+                countEl.textContent = cart.length;
+            } else {
+                countEl.classList.add('hidden');
+            }
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Initialize
+        renderProducts();
+    </script>
+</body>
+</html>
