@@ -1,66 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Apex Look</title>
-  <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
-</head>
-<body>
-  <header>
-    <div class="logo">APEX LOOK</div>
-    <nav><header className="flex items-center justify-between p-4 bg-black">
-  <img
-    src="/images/APEXLOOK5.png"
-    alt="Apex Look Logo"
-    className="h-12 w-auto"
-  />
-  <nav className="flex gap-4 text-white text-sm">
-    <a href="#about" className="hover:text-gray-400">About</a>
-    <a href="#work" className="hover:text-gray-400">Work</a>
-    <a href="#contact" className="hover:text-gray-400">Contact</a>
-  </nav>
-</header>
+# Create a new folder and navigate into it
+mkdir apex-look-website
+cd apex-look-website
 
-      <a href="#shop">Shop</a>
-      <a href="#about">About</a>
-      <a href="#contact">Contact</a>
-    </nav>
-  </header>
+# Initialize git
+git init
 
-  <section class="hero">
-    <h1>Elevate Your Everyday</h1>
-    <p>Minimal design. Maximum presence.</p>
-    <a href="#shop" class="btn">Shop Now</a>
-  </section>
+# Create your React app structure
+# (You'll need Node.js installed)
+npx create-react-app .
 
-  <section id="shop" class="products">
-    <div class="product">
-      <img src="https://via.placeholder.com/400x400" alt="Product 1">
-      <h3>Black Essential Tee</h3>
-      <p>$40</p>
-    </div>
-    <div class="product">
-      <img src="https://via.placeholder.com/400x400" alt="Product 2">
-      <h3>Minimal Hoodie</h3>
-      <p>$75</p>
-    </div>
-    <div class="product">
-      <img src="https://via.placeholder.com/400x400" alt="Product 3">
-      <h3>Tech Cargo Pants</h3>
-      <p>$95</p>
-    </div>
-  </section>
-
-  <section id="about" class="about">
-    <h2>About Apex Look</h2>
-    <p>Apex Look is a design-driven brand built for the modern minimalist. Every piece is crafted with intent, made to outlast trends and elevate your form.</p>
-  </section>
-
-  <footer id="contact">
-    <p>Contact us at <a href="mailto:info@apexlook.com">info@apexlook.com</a></p>
-    <p>© 2025 Apex Look. All rights reserved.</p>
-  </footer>
-</body>
-</html>
+# Replace src/App.js with the code from the artifact
+# Then commit and push
+git add .
+git commit -m "Initial commit - Apex Look website"
+git branch -M main
+git remote add origin https://github.com/YOUR-USERNAME/apex-look-website.git
+git push -u origin main
