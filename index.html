@@ -1,18 +1,127 @@
-# Create a new folder and navigate into it
-mkdir apex-look-website
-cd apex-look-website
+import React, { useState } from 'react';
+import { ShoppingCart, Menu, X, ChevronRight } from 'lucide-react';
 
-# Initialize git
-git init
+export default function ApexLook() {
+  const [cart, setCart] = useState([]);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState('all');
 
-# Create your React app structure
-# (You'll need Node.js installed)
-npx create-react-app .
+  const products = [
+    { id: 1, name: 'Charcoal Face Wash', category: 'skincare', price: 24.99, image: 'https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=400' },
+    { id: 2, name: 'Beard Growth Oil', category: 'haircare', price: 29.99, image: 'https://images.unsplash.com/photo-1619451334792-150fd785ee74?w=400' },
+    { id: 3, name: 'Matte Clay Pomade', category: 'haircare', price: 22.99, image: 'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?w=400' },
+    { id: 4, name: 'Anti-Aging Serum', category: 'skincare', price: 39.99, image: 'https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=400' },
+    { id: 5, name: 'Energizing Shampoo', category: 'haircare', price: 18.99, image: 'https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?w=400' },
+    { id: 6, name: 'Hydrating Moisturizer', category: 'skincare', price: 32.99, image: 'https://images.unsplash.com/photo-1556228453-efd6c1ff04f6?w=400' },
+  ];
 
-# Replace src/App.js with the code from the artifact
-# Then commit and push
-git add .
-git commit -m "Initial commit - Apex Look website"
-git branch -M main
-git remote add origin https://github.com/YOUR-USERNAME/apex-look-website.git
-git push -u origin main
+  const addToCart = (product) => {
+    setCart([...cart, product]);
+  };
+
+  const filteredProducts = selectedCategory === 'all' 
+    ? products 
+    : products.filter(p => p.category === selectedCategory);
+
+  return (
+    <div className="min-h-screen bg-zinc-900 text-white">
+      {/* Header */}
+      <header className="bg-black border-b border-zinc-800 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-8">
+            <h1 className="text-2xl font-bold tracking-wider">APEX LOOK</h1>
+            <nav className="hidden md:flex gap-6">
+              <button onClick={() => setSelectedCategory('all')} className="hover:text-orange-500 transition">Shop All</button>
+              <button onClick={() => setSelectedCategory('skincare')} className="hover:text-orange-500 transition">Skincare</button>
+              <button onClick={() => setSelectedCategory('haircare')} className="hover:text-orange-500 transition">Haircare</button>
+            </nav>
+          </div>
+          <div className="flex items-center gap-4">
+            <button className="relative">
+              <ShoppingCart className="w-6 h-6" />
+              {cart.length > 0 && (
+                <span className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                  {cart.length}
+                </span>
+              )}
+            </button>
+            <button className="md:hidden" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
+        </div>
+        
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden bg-zinc-800 px-4 py-4 space-y-3">
+            <button onClick={() => { setSelectedCategory('all'); setMobileMenuOpen(false); }} className="block w-full text-left hover:text-orange-500">Shop All</button>
+            <button onClick={() => { setSelectedCategory('skincare'); setMobileMenuOpen(false); }} className="block w-full text-left hover:text-orange-500">Skincare</button>
+            <button onClick={() => { setSelectedCategory('haircare'); setMobileMenuOpen(false); }} className="block w-full text-left hover:text-orange-500">Haircare</button>
+          </div>
+        )}
+      </header>
+
+      {/* Hero Section */}
+      <section className="relative h-96 bg-gradient-to-r from-zinc-900 via-zinc-800 to-orange-900 flex items-center">
+        <div className="max-w-7xl mx-auto px-4 w-full">
+          <div className="max-w-xl">
+            <h2 className="text-5xl font-bold mb-4">ELEVATE YOUR GROOMING</h2>
+            <p className="text-xl text-zinc-300 mb-6">Premium skincare and haircare designed for the modern man</p>
+            <button className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 font-semibold flex items-center gap-2 transition">
+              SHOP NOW <ChevronRight className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Products Grid */}
+      <section className="max-w-7xl mx-auto px-4 py-16">
+        <h3 className="text-3xl font-bold mb-8 uppercase tracking-wider">
+          {selectedCategory === 'all' ? 'All Products' : selectedCategory === 'skincare' ? 'Skincare' : 'Haircare'}
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {filteredProducts.map(product => (
+            <div key={product.id} className="bg-zinc-800 border border-zinc-700 overflow-hidden hover:border-orange-500 transition group">
+              <div className="h-64 bg-zinc-700 overflow-hidden">
+                <img src={product.image} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
+              </div>
+              <div className="p-6">
+                <h4 className="text-xl font-semibold mb-2">{product.name}</h4>
+                <p className="text-2xl font-bold text-orange-500 mb-4">${product.price}</p>
+                <button 
+                  onClick={() => addToCart(product)}
+                  className="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 font-semibold transition"
+                >
+                  ADD TO CART
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-black border-t border-zinc-800 py-12">
+        <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div>
+            <h5 className="font-bold text-xl mb-4">APEX LOOK</h5>
+            <p className="text-zinc-400">Premium grooming products for men who demand excellence.</p>
+          </div>
+          <div>
+            <h6 className="font-semibold mb-4">Quick Links</h6>
+            <div className="space-y-2 text-zinc-400">
+              <p className="hover:text-orange-500 cursor-pointer">About Us</p>
+              <p className="hover:text-orange-500 cursor-pointer">Contact</p>
+              <p className="hover:text-orange-500 cursor-pointer">Shipping Info</p>
+            </div>
+          </div>
+          <div>
+            <h6 className="font-semibold mb-4">Newsletter</h6>
+            <p className="text-zinc-400 mb-4">Get exclusive grooming tips and offers</p>
+            <input type="email" placeholder="Your email" className="w-full px-4 py-2 bg-zinc-800 border border-zinc-700 focus:border-orange-500 outline-none" />
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
